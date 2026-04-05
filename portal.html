@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Boardroom | Secure Access</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <header class="site-header">
+  <div class="container header-inner">
+    <a href="index.html" class="brand"><span class="brand-text">KINETIC // EDO</span></a>
+    
+    <button class="mobile-nav-toggle" aria-expanded="false">
+      <div class="hamburger"></div>
+    </button>
+
+    <nav class="nav">
+      <ul class="nav-list">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="about.html" class="nav-link">Methodology</a></li>
+        <li><a href="services.html" class="nav-link">Infrastructure</a></li>
+        <li><a href="portal.html" class="nav-link btn btn-outline">Boardroom</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+ <main>
+  <section class="section reveal boardroom-hero">
+    <div class="container text-center">
+      <div class="security-gate kinetic-panel">
+        <div class="gate-scan-line"></div> <div class="gate-header">
+          <div class="access-icon">
+            <span class="glitch-text" data-text="RESTRICTED">RESTRICTED</span>
+          </div>
+          <h2 class="terminal-title">Secure Partner Access</h2>
+          <p class="text-muted">CREDENTIAL_REQUIRED // SYSTEM_LOCKED</p>
+        </div>
+        
+        <form class="mock-form" onsubmit="return false;">
+          <div class="form-group access-input">
+            <input type="text" placeholder="TERMINAL_ID: ********" disabled>
+          </div>
+          <div class="form-group access-input">
+            <input type="password" placeholder="••••••••" disabled>
+          </div>
+          <button class="btn btn-locked">SYSTEM_OFFLINE</button>
+        </form>
+        <div class="gate-footer">
+          <p>UNAUTHORIZED ACCESS IS LOGGED</p>
+          <a href="#audit-form" class="audit-link">REQUEST_ACCESS_KEY ></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="audit-form" class="section reveal audit-section">
+    <div class="container">
+      <div class="section-header text-center">
+        <h2 class="section-title">Initiate <span style="color:var(--color-accent)">Intelligence Audit</span></h2>
+        <p class="hero-subtitle">Quantify your operational friction. Secure a hardening roadmap.</p>
+      </div>
+      
+      <div class="contact-form terminal-panel" style="max-width: 700px; margin: 0 auto;">
+        <form action="#" method="POST" class="kinetic-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label>OPERATOR_NAME</label>
+              <input type="text" placeholder="e.g. ALEX CHEN // COO" required>
+            </div>
+            <div class="form-group">
+              <label>CORE_INFRASTRUCTURE</label>
+              <select>
+                <option>Select Stack...</option>
+                <option>Legacy WordPress</option>
+                <option>Custom JS / Framework</option>
+                <option>Proprietary Builder (Wix/Shopify)</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label>CURRENT_LATENCY (ESTIMATED)</label>
+            <div class="range-container">
+              <input type="range" min="1" max="10" step="1" class="red-range">
+              <div class="range-labels"><span>FAST</span><span>CRITICAL_DELAY</span></div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>MISSION_OBJECTIVES</label>
+            <textarea placeholder="Outline current bottlenecks..."></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-kinetic-submit">TRANSMIT_DATA</button>
+        </form>
+      </div>
+    </div>
+  </section>
+</main>
+ <script src="scripts.js"></script>
+</body>

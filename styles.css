@@ -1,0 +1,2046 @@
+/* =========================================
+   CLEAN GLOBAL ENGINE
+   ========================================= */
+:root {
+  --color-bg: #030303;
+  --color-bg-alt: #0b0b0d; /* Slightly lifted black for sections */
+  --color-surface: #121214; /* Card surface */
+  --color-border: rgba(255, 255, 255, 0.05);
+  
+  /* NEW SECONDARY: DEEP RED */
+  --color-accent: #b91c1c; /* Blood/Deep Red */
+  --color-accent-glow: rgba(185, 28, 28, 0.3);
+  
+  --color-text: #888888;
+  --color-heading: #ffffff;
+      /* Pure white for impact */
+  
+ 
+  --transition-smooth: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+
+
+  /* Typography */
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-size-base: 16px;
+  --line-height-base: 1.6;
+
+  /* Spacing Scale (Unified) */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-8: 2rem;
+  --space-12: 3rem;
+  --space-section: clamp(80px, 15vh, 160px); /* Use this for .section padding */
+
+  /* Layout & Corners */
+  --container-width: 1200px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  
+  /* Transitions */
+  --transition-fast: 150ms ease-out;
+  --transition-reveal: all 0.8s cubic-bezier(0.2, 1, 0.3, 1);
+}
+
+/* Global Reset */
+body {
+  margin: 0;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-base);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+  font-size: inherit;
+}
+.audit-box {
+  padding: var(--space-8);
+  text-align: center;
+  border: 1px solid var(--color-accent);
+}
+
+.audit-counter {
+  font-family: monospace;
+  font-size: clamp(2rem, 8vw, 5rem);
+  font-weight: 800;
+  color: var(--color-primary);
+  margin-block: var(--space-4);
+}
+/* =========================================
+   REUSABLE UTILITY CLASSES
+   ========================================= */
+
+/* Layout helpers */
+.container {
+  width: 100%;
+  max-width: var(--container-width);
+  margin: 0 auto;
+  padding-inline: var(--space-4);
+}
+
+.section {
+  padding-block: var(--space-12);
+}
+
+.section-header {
+  max-width: 640px;
+  margin: 0 auto var(--space-8);
+  text-align: center;
+}
+
+.section-title {
+  font-size: 2rem;
+  line-height: 1.2;
+  color: var(--color-heading);
+  margin-bottom: var(--space-3);
+}
+
+.section-intro {
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+.grid {
+  display: grid;
+  gap: var(--space-6);
+}
+
+/* Card pattern */
+.card {
+  background-color: var(--color-surface);
+  border-radius: var(--radius-md);
+  padding: var(--space-6);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-soft);
+  transition: transform var(--transition-base), box-shadow var(--transition-base),
+    border-color var(--transition-base), background-color var(--transition-base);
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.12);
+  border-color: var(--color-primary-soft);
+  background-color: #f9fafb;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  border-radius: 999px;
+  font-weight: 600;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background-color var(--transition-base),
+    color var(--transition-base), border-color var(--transition-base),
+    transform var(--transition-fast), box-shadow var(--transition-fast);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.btn-primary {
+  background-color: var(--color-primary);
+  color: #ffffff;
+  box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3);
+}
+
+.btn-primary:hover {
+  background-color: var(--color-primary-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 14px 35px rgba(37, 99, 235, 0.4);
+}
+
+.btn-outline {
+  background-color: transparent;
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.btn-outline:hover {
+  background-color: var(--color-primary-soft);
+}
+
+/* Typography helpers */
+.text-center {
+  text-align: center;
+}
+
+.text-muted {
+  color: var(--color-text-muted);
+}
+
+/* =========================================
+   HEADER & NAVIGATION (FIXED & HARDENED)
+   ========================================= */
+
+.site-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 9999; /* Higher priority to stay on top */
+  background-color: rgba(3, 3, 3, 0.9); 
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.header-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 80px;
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Brand */
+.brand {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  gap: var(--space-2);
+}
+
+.brand-text {
+  font-weight: 800;
+  letter-spacing: -1px;
+  font-size: 1.25rem;
+  color: var(--color-primary); /* Sets "KINETIC // EDO" to your primary color */
+}
+
+/* =========================================
+   DESKTOP NAVIGATION
+   ========================================= */
+
+.nav-list {
+  display: flex;
+  gap: var(--space-8);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-link {
+  position: relative;
+  color: #ffffff;
+  text-decoration: none;
+  font-family: monospace;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 10px 0;
+  transition: color 0.3s ease;
+}
+
+/* Underline Animation */
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: var(--color-accent);
+  box-shadow: 0 0 10px var(--color-accent), 0 0 20px var(--color-accent);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateX(-50%);
+}
+
+.nav-link:hover {
+  color: var(--color-accent);
+  text-shadow: 0 0 8px rgba(185, 28, 28, 0.6);
+}
+
+.nav-link:hover::after {
+  width: 100%;
+}
+
+/* Specialized 'Boardroom' Button */
+.btn-outline {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 10px 20px !important;
+  border-radius: 4px;
+}
+
+.btn-outline:hover {
+  background: rgba(185, 28, 28, 0.1) !important;
+  border-color: var(--color-accent) !important;
+  box-shadow: inset 0 0 15px rgba(185, 28, 28, 0.3), 0 0 15px rgba(185, 28, 28, 0.2) !important;
+}
+
+/* =========================================
+   MOBILE ENGINE (RESPONSIVE FIXES)
+   ========================================= */
+
+/* Hamburger Button */
+.mobile-nav-toggle {
+  display: none; /* Hidden on Desktop */
+  background: transparent;
+  border: 1px solid var(--color-accent);
+  padding: 10px;
+  cursor: pointer;
+  z-index: 10000;
+}
+
+.hamburger {
+  width: 22px;
+  height: 2px;
+  background: var(--color-accent);
+  position: relative;
+}
+
+.hamburger::before, .hamburger::after {
+  content: '';
+  position: absolute;
+  width: 22px;
+  height: 2px;
+  background: var(--color-accent);
+  left: 0;
+}
+.hamburger::before { top: -6px; }
+.hamburger::after { bottom: 6px; }
+
+@media (max-width: 768px) {
+  .mobile-nav-toggle {
+    display: block; 
+  }
+
+  /* 1. THE NAV CONTAINER (The "Page") */
+  .nav {
+    position: fixed;
+    top: 80px;      /* Starts right below the header */
+    left: 0;
+    width: 100%;
+    height: 100vh;  /* Full screen height */
+    background-color: #050505; 
+    border-bottom: 2px solid var(--color-accent);
+    display: none;  /* Hidden by default */
+    z-index: 9998;
+    padding-top: 50px; /* Space from the top of the menu */
+  }
+
+  /* 2. THE OPEN STATE */
+  .nav.open {
+    display: flex !important; /* Switch to Flex to center content */
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* 3. THE LIST (Centered and Spaced) */
+  .nav-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;   /* Big gaps for mobile tapping */
+    padding: 0;
+    margin: 0;
+    text-align: center;
+    width: 100%;
+  }
+
+  /* 4. THE LINKS (Bigger for Mobile) */
+  .nav-link {
+    font-size: 1.5rem !important;
+    display: block;
+    width: 100%;
+  }
+}
+/* =========================================
+   THE "FORCE CLICK" PROTOCOL
+   ========================================= */
+
+.site-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 9999;
+  background-color: rgba(3, 3, 3, 0.9); 
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--color-border);
+  overflow: visible; /* Add this line */
+}
+
+.header-inner, .nav, .nav-list, .nav-link {
+  /* This ensures the children (the links) are also interactive */
+  z-index: 100000 !important;
+  pointer-events: auto !important;
+  cursor: pointer !important;
+}
+
+/* If you have a background video or matrix effect, 
+   push it to the back explicitly */
+.hero-video, .matrix-bg, canvas {
+  z-index: -1 !important;
+  pointer-events: none !important;
+}
+
+/* Ensure the main content doesn't "float" over the header */
+main {
+  position: relative;
+  z-index: 1;
+}
+
+/* The Boardroom Button Flip */
+.btn-boardroom {
+  background: transparent;
+  color: var(--color-heading);
+  border: 1px solid var(--color-border);
+  padding: 12px 24px;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  letter-spacing: 2px;
+  transition: var(--transition-smooth);
+}
+
+.btn-boardroom:hover {
+  background: var(--color-heading); /* Turns White */
+  color: #000000 !important;        /* Text turns Black */
+  border-color: var(--color-heading);
+  box-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);
+}
+
+
+.status-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: monospace;
+  font-size: 0.7rem;
+  color: var(--color-signal); /* Cyber Lime */
+  text-transform: uppercase;
+}
+
+.blip {
+  width: 6px;
+  height: 6px;
+  background: var(--color-signal);
+  border-radius: 50%;
+  animation: blink 1.5s infinite;
+}
+
+@keyframes blink {
+  0% { opacity: 1; }
+  50% { opacity: 0.3; }
+  100% { opacity: 1; }
+}
+
+
+
+
+
+/* =========================================
+   FINAL UNIFIED HERO (VIDEO + CENTERED)
+   ========================================= */
+.hero {
+  position: relative;
+  /* CHANGE THIS LINE: Remove var(--color-bg) and set to transparent */
+  background: transparent; 
+  
+  padding: 80px 20px 40px 20px; 
+  display: flex;
+  flex-direction: column;
+  align-items: center; 
+  justify-content: flex-start;
+  min-height: 60vh; 
+  text-align: center;
+  width: 100%;
+  overflow: hidden; /* Important to keep video inside the box */
+}
+
+.video-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1; /* Sits at the very bottom */
+}
+
+#hero-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* This crops the YouTube UI if you caught any edges */
+  opacity: 0; /* Start invisible */
+  animation: fadeInVideo 2s ease-in forwards; /* Fade in over 2 seconds */
+  filter: brightness(0.6) contrast(1.2); /* Makes the red Matrix look deeper and sharper */
+}
+
+@keyframes fadeInVideo {
+  to { opacity: 0.5; } /* Final opacity - keeps it subtle behind the text */
+}
+
+.video-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  /* A heavy black-to-transparent gradient hides the edges of the video */
+  background: linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, transparent 50%, rgba(0,0,0,0.8) 100%);
+  z-index: 2;
+}
+
+.hero-grid {
+  position: relative;
+  z-index: 10; /* Forces text ABOVE the video and overlay */
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 0; 
+}
+
+.hero-content {
+  max-width: 850px;
+  margin: 0 auto;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Ensure the title and eyebrow are punchy */
+.hero-title {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  line-height: 1.1;
+  color: #ffffff;
+  margin: 0 0 1.5rem;
+  font-weight: 800;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+}
+
+.hero-subtitle {
+  color: #ccc;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 2.5rem;
+  max-width: 600px;
+}
+/* =========================================
+   RED SYSTEM BUTTONS (FIXED)
+   ========================================= */
+.btn-primary {
+  background-color: var(--color-accent) !important;
+  border: 1px solid var(--color-accent) !important;
+  color: #ffffff !important;
+  padding: 12px 28px;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 15px rgba(185, 28, 28, 0.2);
+  cursor: pointer;
+  display: inline-block;
+}
+
+.btn-primary:hover {
+  background-color: #991b1b !important;
+  box-shadow: 0 0 25px rgba(185, 28, 28, 0.5) !important;
+  transform: translateY(-2px);
+}
+
+/* FIX: The Pulse Animation (Turning Blue to Red) */
+.pulse {
+  animation: pulse-red 2s infinite;
+}
+
+@keyframes pulse-red {
+  0% {
+    box-shadow: 0 0 0 0 rgba(185, 28, 28, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 15px rgba(185, 28, 28, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(185, 28, 28, 0);
+  }
+}
+/* =========================================
+   ABC+D FRAMEWORK: BLUR & FILL EFFECT
+   ========================================= */
+
+#framework .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--space-6);
+  display: flex;
+  justify-content: center;
+}
+
+.framework-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--space-8);
+  width: 100%;
+}
+
+.framework-grid .card {
+  background: #0a0a0a;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: var(--space-10);
+  position: relative;
+  min-height: 250px; 
+  cursor: pointer;
+  overflow: hidden;
+  
+  /* ADDED: Forces everything in the card to center */
+  display: flex;
+  flex-direction: column;
+  align-items: center;      
+  justify-content: center;   
+  text-align: center;
+  
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* 1. TEXT BLUR LOGIC + CENTERING */
+.card-main-content {
+  /* ADDED: Ensures title and p tag stay centered during the blur */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  opacity: 1;
+  filter: blur(0px);
+}
+
+.card:hover .card-main-content {
+  opacity: 0;
+  filter: blur(12px); 
+  transform: scale(0.95);
+}
+
+.click-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none; 
+  opacity: 0;
+  z-index: 5; 
+  transform: scale(1.1);
+  transition: all 0.4s ease;
+}
+
+.click-overlay span {
+  font-family: monospace;
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: var(--color-accent); 
+  letter-spacing: 4px;
+  text-shadow: 0 0 15px rgba(185, 28, 28, 0.6);
+  text-transform: uppercase;
+}
+
+.card:hover .click-overlay {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* 3. CARD GLOW & INDICATOR */
+.framework-grid .card:hover {
+  border-color: var(--color-accent);
+  box-shadow: inset 0 0 20px rgba(185, 28, 28, 0.05),
+              0 15px 40px -10px rgba(185, 28, 28, 0.2);
+}
+
+.card-indicator {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: var(--color-accent);
+  transform: scaleX(0);
+  transition: transform 0.4s ease;
+  transform-origin: left;
+}
+
+.card:hover .card-indicator {
+  transform: scaleX(1);
+}
+
+/* Header Elements (A, B, C, D) stays at top corners */
+.card-header {
+  /* ADDED: Absolute positioning keeps icons from pushing text off-center */
+  position: absolute;
+  top: var(--space-6);
+  left: 0;
+  width: 100%;
+  padding: 0 var(--space-10);
+  
+  display: flex;
+  justify-content: space-between;
+  z-index: 2; 
+}
+
+.card:hover .card-id, .card:hover .arrow {
+  color: var(--color-accent) !important;
+}
+/* =========================================
+   FIXED MODAL POSITIONING
+   ========================================= */
+.modal-overlay {
+  position: fixed; /* FIXED is the key—it stays on the screen */
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.95); /* Heavy dark backdrop */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  /* Initial State (Hidden) */
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+  
+  transition: all 0.4s ease;
+  z-index: 9999; /* Higher than EVERYTHING else */
+}
+
+/* When Javascript adds the 'active' class */
+.modal-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+  visibility: visible;
+}
+
+.modal-content {
+  background: #0a0a0a;
+  border: 1px solid var(--color-accent); /* Deep Red Border */
+  padding: 3rem;
+  max-width: 600px;
+  width: 90%;
+  position: relative;
+  box-shadow: 0 0 50px rgba(185, 28, 28, 0.2);
+  
+  /* Animation for the box popping up */
+  transform: translateY(20px);
+  transition: transform 0.4s ease;
+}
+
+.modal-overlay.active .modal-content {
+  transform: translateY(0);
+}
+
+.close-btn {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 2.5rem;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.close-btn:hover {
+  color: var(--color-accent);
+
+}.audit-counter {
+  font-family: 'Courier New', Courier, monospace; /* Terminal font */
+  font-size: clamp(3rem, 8vw, 6rem);
+  font-weight: 900;
+  letter-spacing: -2px;
+  margin: var(--space-6) 0;
+  min-height: 1.2em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#load-time-display {
+  transition: color 0.5s ease;
+}
+
+/* Subtle flicker for that terminal feel */
+.flicker-text {
+  animation: terminal-flicker 0.15s infinite secondary;
+}
+
+@keyframes terminal-flicker {
+  0% { opacity: 1; }
+  50% { opacity: 0.8; }
+  100% { opacity: 1; }
+}
+
+#cta {
+  text-align: center; /* Forces all text elements inside to the middle */
+  display: flex;
+  flex-direction: column;
+  align-items: center; 
+  justify-content: center;
+}
+
+#cta .hero-title, 
+#cta .hero-subtitle {
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center; /* Double-down on centering the text itself */
+  max-width: 800px;   /* Prevents the line from getting too long/ugly */
+}
+/* =========================================
+   ABOUT SECTION
+   ========================================= */
+
+.about {
+  background-color: var(--color-bg);
+}
+
+.about-grid {
+  display: grid;
+  gap: var(--space-8);
+  align-items: flex-start;
+}
+
+.about-text {
+  font-size: 1rem;
+  color: var(--color-text-muted);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.about-highlights {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.about-card {
+  background-color: #f9fafb;
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+}
+
+.about-card-title {
+  margin-top: 0;
+  margin-bottom: var(--space-2);
+  font-size: 1.05rem;
+  color: var(--color-heading);
+}
+
+.about-card-text {
+  margin: 0;
+  color: var(--color-text-muted);
+}
+/* Split Philosophy Styles */
+.split-philosophy {
+  padding-block: 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.side-old, .side-new {
+  padding: var(--space-section) var(--space-8);
+}
+
+.side-old {
+  background-color: #000;
+  opacity: 0.6;
+}
+
+.side-new {
+  background-color: var(--color-bg-alt);
+  border-left: 1px solid var(--color-border);
+}
+
+.comparison-list {
+  list-style: none;
+  padding: 0;
+  margin-top: var(--space-4);
+}
+
+.comparison-list li {
+  margin-bottom: var(--space-2);
+  font-family: monospace;
+}
+
+/* Timeline Styles */
+.timeline {
+  position: relative;
+  max-width: 800px;
+  margin: 0 auto;
+  padding-left: 40px;
+  border-left: 1px solid var(--color-border);
+}
+
+.timeline-item {
+  position: relative;
+  margin-bottom: var(--space-8);
+}
+
+.timeline-dot {
+  position: absolute;
+  left: -46px;
+  top: 5px;
+  width: 10px;
+  height: 10px;
+  background: var(--color-accent);
+  border-radius: 50%;
+  box-shadow: 0 0 10px var(--color-accent);
+}
+
+/* Architect Card */
+.architect-card {
+  display: flex;
+  gap: var(--space-8);
+  padding: var(--space-10);
+  align-items: center;
+}
+
+.github-badge {
+  display: inline-block;
+  margin-top: var(--space-4);
+  padding: 8px 16px;
+  border: 1px solid var(--color-accent);
+  color: var(--color-accent);
+  font-family: monospace;
+  font-size: 0.8rem;
+}
+
+/* =========================================
+   METHODOLOGY: KINETIC STYLING
+   ========================================= */
+
+/* 1. Split Philosophy Upgrade */
+.side-old {
+  background: linear-gradient(135deg, #000 0%, #111 100%);
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.side-new {
+  background: linear-gradient(135deg, #050505 0%, #0a0000 100%);
+  position: relative;
+}
+
+.side-new::after {
+  content: 'ENCRYPTED';
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 0.6rem;
+  color: var(--color-accent);
+  opacity: 0.3;
+  letter-spacing: 2px;
+}
+
+/* 2. Moving Timeline Logic */
+.timeline-container {
+  position: relative;
+  max-width: 800px;
+  margin: 4rem auto;
+  padding-left: 50px;
+}
+
+/* The Background (Static) Line */
+.timeline-container::before {
+  content: '';
+  position: absolute;
+  left: 20px;
+  top: 0;
+  width: 2px;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* The Moving (Glow) Line */
+.timeline-progress {
+  position: absolute;
+  left: 20px;
+  top: 0;
+  width: 2px;
+  height: 0; /* Animated via scroll */
+  background: var(--color-accent);
+  box-shadow: 0 0 15px var(--color-accent);
+  z-index: 1;
+  transition: height 0.1s linear;
+}
+
+.timeline-item {
+  position: relative;
+  margin-bottom: 5rem;
+  opacity: 0.3;
+  transform: translateX(-10px);
+  transition: all 0.6s ease;
+}
+
+/* When the item becomes "active" on scroll */
+.timeline-item.active {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.timeline-dot {
+  position: absolute;
+  left: -42px;
+  top: 5px;
+  width: 14px;
+  height: 14px;
+  background: #000;
+  border: 2px solid #333;
+  border-radius: 50%;
+  z-index: 2;
+  transition: all 0.4s ease;
+}
+
+.timeline-item.active .timeline-dot {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 15px var(--color-accent);
+  background: var(--color-accent);
+}
+
+.day-tag {
+  font-family: monospace;
+  color: var(--color-accent);
+  font-size: 0.8rem;
+  letter-spacing: 2px;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.timeline-content h3 {
+  font-size: 1.5rem;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+
+/* =========================================
+   SPLIT PHILOSOPHY: HUD INTERFACE
+   ========================================= */
+
+.philosophy-grid {
+  display: grid;
+  grid-template-columns: 1fr 2px 1fr; /* Two sides separated by a 2px line */
+  gap: 0;
+  min-height: 60vh;
+  align-items: stretch;
+  background: #050505;
+  border: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.philosophy-side {
+  padding: var(--space-16) var(--space-8);
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Vertical Center */
+  align-items: center;     /* Horizontal Center */
+  text-align: center;      /* Text Center */
+  transition: all 0.5s ease;
+}
+
+/* Legacy Side - Dim and desaturated */
+.legacy-logic {
+  background: rgba(0, 0, 0, 0.8);
+  opacity: 0.5;
+  filter: grayscale(1);
+}
+
+.legacy-logic:hover {
+  opacity: 0.7;
+}
+
+/* Kinetic Side - Sharp and Glowing */
+.kinetic-logic {
+  background: linear-gradient(135deg, #0a0a0a 0%, #050000 100%);
+  position: relative;
+}
+
+.side-title {
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  text-transform: uppercase;
+  letter-spacing: -1px;
+  margin-bottom: var(--space-6);
+}
+
+.dim-text { color: #555; }
+
+/* The Comparison List Styling */
+.comparison-list {
+  list-style: none;
+  padding: 0;
+  width: 100%;
+}
+
+.comparison-list li {
+  font-family: 'Courier New', monospace;
+  font-size: 1rem;
+  margin-bottom: var(--space-3);
+  letter-spacing: 1px;
+  position: relative;
+}
+
+/* Red accent bullet points for the Kinetic side */
+.kinetic-logic .comparison-list li::before {
+  content: '>';
+  color: var(--color-accent);
+  margin-right: 10px;
+  font-weight: bold;
+}
+
+/* 3. THE CENTER DIVIDER */
+.philosophy-divider {
+  position: relative;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.divider-line {
+  width: 2px;
+  height: 100%;
+  background: linear-gradient(to bottom, transparent, var(--color-accent), transparent);
+  box-shadow: 0 0 15px var(--color-accent);
+}
+
+.divider-node {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 10px;
+  height: 10px;
+  background: var(--color-accent);
+  border-radius: 50%;
+  box-shadow: 0 0 20px var(--color-accent);
+  z-index: 10;
+}
+
+/* =========================================
+   THE MISSION: TERMINAL GLOW
+   ========================================= */
+
+.mission-card {
+  background: #050505;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: var(--space-12);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  text-align: center;
+  z-index: 1;
+}
+
+/* 1. The Red Atmosphere Hover (Replaces the White) */
+.mission-card:hover {
+  border-color: var(--color-accent);
+  box-shadow: inset 0 0 50px rgba(185, 28, 28, 0.15),
+              0 0 30px rgba(185, 28, 28, 0.1);
+  transform: scale(1.01);
+}
+
+.mission-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 150%;
+  height: 150%;
+  background: radial-gradient(circle, rgba(185, 28, 28, 0.1) 0%, transparent 70%);
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 0.8s ease;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.mission-card:hover .mission-glow {
+  opacity: 1;
+}
+
+/* 2. Text Styling */
+.mission-quote {
+  font-size: 1.5rem;
+  font-style: italic;
+  color: #fff;
+  margin: 2rem auto;
+  max-width: 800px;
+  line-height: 1.4;
+  position: relative;
+  border: none; /* Removed the old side-border for a cleaner look */
+}
+
+/* Adding "Matrix" brackets around the quote on hover */
+.mission-quote::before, .mission-quote::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 100%;
+  border-color: var(--color-accent);
+  border-style: solid;
+  opacity: 0;
+  transition: all 0.4s ease;
+}
+
+.mission-quote::before { top: 0; left: -30px; border-width: 2px 0 2px 2px; }
+.mission-quote::after { top: 0; right: -30px; border-width: 2px 2px 2px 0; }
+
+.mission-card:hover .mission-quote::before,
+.mission-card:hover .mission-quote::after {
+  opacity: 1;
+  transform: translateX(10px); /* Quote "brackets" slide in */
+}
+
+/* 3. System Status Bar */
+.system-status {
+  margin-top: 3rem;
+  font-family: monospace;
+  font-size: 0.7rem;
+  letter-spacing: 3px;
+  color: #444;
+  transition: color 0.4s ease;
+}
+
+.status-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background: #222;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.mission-card:hover .system-status { color: var(--color-accent); }
+.mission-card:hover .status-dot {
+  background: var(--color-accent);
+  box-shadow: 0 0 10px var(--color-accent);
+  animation: pulse-red 1.5s infinite;
+}
+
+@keyframes pulse-red {
+  0% { opacity: 1; }
+  50% { opacity: 0.3; }
+  100% { opacity: 1; }
+}
+
+
+/* =========================================
+   CLEANUP: KILL THE WHITE HOVER
+   ========================================= */
+
+/* Target all cards in the methodology/about pages */
+.about-card, .architect-card, .mission-card {
+    background-color: #050505 !important; /* Forces dark background */
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Force hover to be transparent/red instead of white */
+.about-card:hover, .architect-card:hover, .mission-card:hover {
+    background-color: #080808 !important; 
+    border-color: var(--color-accent) !important;
+    box-shadow: 0 0 20px rgba(185, 28, 28, 0.2) !important;
+}
+
+/* Fix the text colors so they don't disappear */
+.about-card-title, .about-card-text, .section-title, .text-muted {
+    color: #ffffff !important;
+}
+
+.text-muted {
+    opacity: 0.7;
+}
+.architect-card {
+    position: relative;
+    background: #050505;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: all 0.4s ease;
+}
+
+/* Red Corner Brackets */
+.architect-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    border-top: 2px solid var(--color-accent);
+    border-left: 2px solid var(--color-accent);
+    transition: all 0.3s ease;
+    opacity: 0;
+}
+
+.architect-card:hover::before {
+    width: 30px;
+    height: 30px;
+    opacity: 1;
+}
+
+.architect-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(185, 28, 28, 0.1);
+}
+/* =========================================
+   SERVICES SECTION
+   ========================================= */
+
+.services {
+  background-color: var(--color-bg-alt);
+}
+
+.service-grid {
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+.service-card .card-title {
+  margin-top: 0;
+  margin-bottom: var(--space-3);
+  font-size: 1.1rem;
+  color: var(--color-heading);
+}
+
+.service-card .card-text {
+  margin: 0 0 var(--space-3);
+  color: var(--color-text-muted);
+}
+
+.card-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.95rem;
+}
+
+.card-list li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+
+.card-list li::before {
+  content: "✓";
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.section-cta {
+  margin-top: var(--space-8);
+  text-align: center;
+  color: var(--color-text-muted);
+}
+/* Stack Grid */
+.stack-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--space-8);
+  margin-top: var(--space-12);
+}
+
+.icon-glow {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  font-weight: 800;
+  transition: all 0.4s ease;
+  background: rgba(255,255,255,0.02);
+}
+
+.stack-card:hover .icon-glow {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
+  color: var(--color-accent);
+}
+
+/* Z-Pattern blocks */
+.capability-block {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-12);
+  align-items: center;
+  margin-bottom: var(--space-section);
+}
+
+.capability-media {
+  aspect-ratio: 16 / 9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #111, #000);
+}
+
+/* Bar Chart */
+.bar-chart-container {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.bar-group {
+  margin-bottom: var(--space-6);
+}
+
+.bar-bg {
+  height: 30px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 99px;
+  overflow: hidden;
+  margin-top: 10px;
+}
+
+.bar-fill {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding-left: 20px;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.bar-fill.legacy { background: #333; color: #777; }
+.bar-fill.kinetic { background: var(--color-accent); color: #000; }
+/* =========================================
+   INFRASTRUCTURE: THE DOOM LOOK
+   ========================================= */
+
+.stack-section { background: radial-gradient(circle at center, #0a0000 0%, #000 100%); }
+
+.stack-card {
+  position: relative;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.stack-card:hover {
+  transform: translateY(-10px) scale(1.05);
+  background: rgba(185, 28, 28, 0.05);
+  border-color: var(--color-accent);
+}
+
+.stack-status {
+  font-family: monospace;
+  font-size: 0.6rem;
+  color: #444;
+  margin-top: 10px;
+  display: block;
+  letter-spacing: 1px;
+}
+
+.stack-card:hover .stack-status { color: var(--color-accent); }
+
+/* CAPABILITY BLOCKS */
+.capability-block {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 60px;
+  margin-bottom: 120px;
+  align-items: center;
+}
+
+.capability-block.reverse { grid-template-columns: 0.8fr 1.2fr; }
+
+.cap-id {
+  font-family: monospace;
+  color: var(--color-accent);
+  font-size: 1rem;
+  margin-bottom: 10px;
+  opacity: 0.5;
+}
+
+.cap-title {
+  font-size: 2rem;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+
+/* THE GLASS PANEL */
+.glass-panel {
+  background: rgba(10, 10, 10, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  padding: 20px;
+  position: relative;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+}
+
+.code-header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 10px;
+  margin-bottom: 15px;
+  font-family: monospace;
+  font-size: 0.7rem;
+  color: #666;
+}
+
+/* SCANLINE ANIMATION */
+.security-shield-hex {
+  width: 150px;
+  height: 150px;
+  background: rgba(185, 28, 28, 0.1);
+  border: 2px solid var(--color-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  position: relative;
+  overflow: hidden;
+}
+
+.scan-line {
+  position: absolute;
+  top: -100%;
+  left: 0;
+  width: 100%;
+  height: 50%;
+  background: linear-gradient(to bottom, transparent, var(--color-accent), transparent);
+  opacity: 0.5;
+  animation: scanning 3s infinite linear;
+}
+
+@keyframes scanning {
+  0% { top: -100%; }
+  100% { top: 100%; }
+}
+
+/* BAR CHART ANIMATION */
+.bar-chart-container { margin-top: 40px; }
+
+.bar-label {
+  display: flex;
+  justify-content: space-between;
+  font-family: monospace;
+  font-size: 0.8rem;
+  margin-bottom: 10px;
+}
+
+.bar-fill {
+  width: 0; /* Animated via JS */
+  transition: width 1.5s cubic-bezier(0.1, 1, 0.3, 1);
+}
+
+.bar-fill.kinetic {
+  background: var(--color-accent);
+  box-shadow: 0 0 20px var(--color-accent);
+}
+/* =========================================
+   FIX 1: NAV BAR OVERLAP
+   ========================================= */
+main {
+  /* This ensures the first section starts AFTER the nav bar height */
+  padding-top: 100px; 
+}
+
+/* =========================================
+   FIX 2: PURGE BLUE GLOW -> FORCE RED
+   ========================================= */
+.stack-card:hover .icon-glow {
+  border-color: var(--color-accent) !important;
+  /* Replaced the blue (56, 189, 248) with your deep red */
+  box-shadow: 0 0 25px rgba(185, 28, 28, 0.6), 
+              inset 0 0 10px rgba(185, 28, 28, 0.4) !important;
+  color: var(--color-accent) !important;
+  background: rgba(185, 28, 28, 0.05) !important;
+}
+
+/* Ensure the labels also turn red on hover */
+.stack-card:hover .stack-label {
+  color: #fff;
+  text-shadow: 0 0 8px rgba(185, 28, 28, 0.5);
+}
+
+/* =========================================
+   FIX 3: STACK GRID SPACING
+   ========================================= */
+.stack-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--space-8);
+  margin-top: var(--space-12);
+  padding-bottom: 4rem; /* Extra space before the next section */
+}
+/* =========================================
+   CONTACT SECTION
+   ========================================= */
+
+.contact {
+  background-color: var(--color-bg);
+}
+
+.contact-grid {
+  display: grid;
+  gap: var(--space-8);
+  align-items: flex-start;
+}
+
+.contact-details {
+  color: var(--color-text-muted);
+}
+
+.contact-subtitle {
+  margin-top: 0;
+  margin-bottom: var(--space-3);
+  color: var(--color-heading);
+}
+
+.contact-list {
+  list-style: none;
+  padding: 0;
+  margin: var(--space-4) 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.contact-list a {
+  color: var(--color-primary-dark);
+}
+
+.contact-list a:hover {
+  text-decoration: underline;
+}
+
+/* Contact form */
+.contact-form {
+  background-color: #f9fafb;
+  border-radius: var(--radius-md);
+  padding: var(--space-6);
+  border: 1px solid var(--color-border);
+}
+
+.form-group {
+  margin-bottom: var(--space-4);
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: var(--space-2);
+  color: var(--color-heading);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 0.65rem 0.8rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid #d1d5db;
+  background-color: #ffffff;
+  transition: border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 1px var(--color-primary-soft);
+}
+
+.form-note {
+  margin-top: var(--space-3);
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+/* Security Gate Mockup */
+.security-gate {
+  max-width: 450px;
+  margin: 0 auto;
+  padding: var(--space-10);
+  border: 1px solid var(--color-accent);
+  box-shadow: 0 0 50px rgba(56, 189, 248, 0.1);
+}
+
+.lock-icon {
+  font-size: 3rem;
+  margin-bottom: var(--space-4);
+}
+
+.mock-form input {
+  background: rgba(255,255,255,0.05) !important;
+  border-color: var(--color-border) !important;
+  color: #444 !important; /* Makes it look disabled */
+}
+
+/* Map & Nodes */
+.map-container {
+  height: 400px;
+  margin-top: var(--space-8);
+  position: relative;
+  background: radial-gradient(circle at center, #111, #000);
+  overflow: hidden;
+}
+
+.map-svg-mockup {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  opacity: 0.6;
+}
+
+.pulse-node {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: var(--color-accent);
+  border-radius: 50%;
+  box-shadow: 0 0 15px var(--color-accent);
+  animation: node-pulse 2s infinite;
+}
+
+@keyframes node-pulse {
+  0% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(3); opacity: 0; }
+}
+
+.map-label {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: monospace;
+  font-size: 0.7rem;
+  letter-spacing: 2px;
+  color: var(--color-accent);
+}
+
+/* =========================================
+   BOARDROOM: KINETIC COMMAND CENTER
+   ========================================= */
+
+/* 1. The Restricted Gate */
+.kinetic-panel {
+  background: rgba(5, 5, 5, 0.95);
+  border: 1px solid rgba(185, 28, 28, 0.3);
+  padding: 3rem;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 50px rgba(185, 28, 28, 0.1);
+}
+
+.gate-scan-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--color-accent);
+  box-shadow: 0 0 15px var(--color-accent);
+  animation: scan-vertical 4s infinite linear;
+  z-index: 5;
+}
+
+@keyframes scan-vertical {
+  0% { top: 0; }
+  100% { top: 100%; }
+}
+
+.btn-locked {
+  width: 100%;
+  background: transparent;
+  border: 1px solid #222;
+  color: #444;
+  font-family: monospace;
+  padding: 15px;
+  cursor: not-allowed;
+  letter-spacing: 3px;
+}
+
+/* 2. The Intelligence Audit Form */
+.terminal-panel {
+  background: #080808;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 40px;
+  position: relative;
+}
+
+.terminal-panel::before {
+  content: 'SECURE_TRANSIT';
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  font-family: monospace;
+  font-size: 0.6rem;
+  color: var(--color-accent);
+  opacity: 0.4;
+}
+
+/* Form Styling */
+.kinetic-form label {
+  color: var(--color-accent);
+  font-family: monospace;
+  font-size: 0.75rem;
+  letter-spacing: 2px;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.kinetic-form input, .kinetic-form select, .kinetic-form textarea {
+  background: #000 !important;
+  border: 1px solid #222 !important;
+  color: #fff !important;
+  border-radius: 0;
+  padding: 12px;
+  font-family: 'Courier New', monospace;
+  transition: all 0.3s ease;
+}
+
+.kinetic-form input:focus, .kinetic-form select:focus {
+  border-color: var(--color-accent) !important;
+  box-shadow: 0 0 15px rgba(185, 28, 28, 0.2);
+  outline: none;
+}
+
+/* Submit Button Hover */
+.btn-kinetic-submit {
+  width: 100%;
+  background: transparent;
+  border: 1px solid var(--color-accent);
+  color: var(--color-accent);
+  padding: 20px;
+  font-family: monospace;
+  font-weight: 800;
+  letter-spacing: 5px;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  margin-top: 20px;
+}
+
+.btn-kinetic-submit:hover {
+  background: var(--color-accent);
+  color: #000;
+  box-shadow: 0 0 30px var(--color-accent);
+  transform: translateY(-2px);
+}
+
+/* 3. Range Input (Red Slider) */
+.red-range {
+  -webkitappearance: none;
+  width: 100%;
+  height: 2px;
+  background: #222;
+  outline: none;
+}
+
+.red-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 15px;
+  height: 15px;
+  background: var(--color-accent);
+  box-shadow: 0 0 10px var(--color-accent);
+  cursor: pointer;
+}
+/* =========================================
+   FOOTER
+   ========================================= */
+/* Every second section gets the "Lift" color */
+section:nth-child(even) {
+  background-color: var(--color-bg-alt);
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.site-footer {
+  background-color: #000000;
+  border-top: 1px solid var(--color-border);
+  padding-block: var(--space-12);
+}
+
+.footer-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  font-size: 0.9rem;
+}
+
+.footer-copy {
+  margin: 0;
+}
+
+.footer-links {
+  list-style: none;
+  display: flex;
+  gap: var(--space-4);
+  margin: 0;
+  padding: 0;
+}
+
+.footer-links a {
+  color: var(--color-footer-text);
+  opacity: 0.8;
+  transition: opacity var(--transition-fast);
+}
+
+.footer-links a:hover {
+  opacity: 1;
+}
+
+/* =========================================
+   RESPONSIVE ADJUSTMENTS
+   ========================================= */
+
+/* Medium screens */
+@media (min-width: 640px) {
+  .hero-grid {
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  }
+
+  .about-grid {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  }
+
+  .about-highlights {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .contact-grid {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  }
+}
+
+/* Large screens */
+@media (min-width: 768px) {
+  .about-highlights {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* Small screens adjustments */
+@media (max-width: 767px) {
+  .header-inner {
+    padding-block: var(--space-3);
+  }
+
+  .nav {
+    display: none;
+  }
+
+  .nav-toggle {
+    display: inline-flex;
+  }
+
+  .hero {
+    padding-top: var(--space-10);
+  }
+
+  .hero-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .contact-form {
+    padding: var(--space-4);
+  }
+
+  .footer-inner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+/* MOBILE NAV LOGIC */
+@media (max-width: 768px) {
+  .mobile-nav-toggle { display: block; position: relative; z-index: 10000; }
+  
+  .nav {
+    position: fixed;
+    inset: 0 0 0 30%; /* Pushes menu to the right 70% of the screen */
+    background: rgba(5, 5, 5, 0.98);
+    backdrop-filter: blur(15px);
+    transform: translateX(100%); /* Hides it off-screen */
+    transition: transform 0.4s ease-in-out;
+    z-index: 9999;
+    padding: 100px 20px;
+    border-left: 2px solid var(--color-accent);
+  }
+
+  /* This class gets added by JS when you click the button */
+  .nav.nav-active { transform: translateX(0%); }
+
+  .nav-list { flex-direction: column; gap: 30px; text-align: right; }
+  
+  .hamburger, .hamburger::before, .hamburger::after {
+    width: 25px; height: 2px; background: var(--color-accent);
+    position: absolute; transition: all 0.3s;
+  }
+  .hamburger::before { content: ''; top: -8px; left: 0; }
+  .hamburger::after { content: ''; bottom: -8px; left: 0; }
+}
+/* =========================================
+   CRITICAL CLICKABILITY FIX
+   ========================================= */
+
+/* 1. Force the Header to the absolute front */
+.site-header {
+    position: fixed !important;
+    z-index: 999999 !important; /* One million z-index to be safe */
+    pointer-events: auto !important;
+}
+
+/* 2. Ensure all children of the header allow clicks */
+.site-header *, .nav-link, .brand, .mobile-nav-toggle {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+}
+
+/* 3. Push the Hero and Video layers BACK */
+.hero {
+    z-index: 1 !important;
+    position: relative;
+}
+
+.video-background, .video-overlay, #hero-video {
+    z-index: -1 !important; /* Move video behind everything */
+    pointer-events: none !important; /* Mouse clicks pass through it */
+}
+
+/* 4. Fix the Hero-Grid overlap */
+.hero-grid {
+    z-index: 2 !important; /* Above video, but below Header */
+    pointer-events: auto;
+}
+
+/* 5. Cleanup for Mobile */
+@media (max-width: 768px) {
+    .nav.open {
+        z-index: 999998 !important;
+        pointer-events: auto !important;
+        display: block !important;
+    }
+}
+

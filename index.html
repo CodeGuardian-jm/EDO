@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EDO Infrastructure | Vision</title>
+  <link rel="stylesheet" href="styles.css" />
+  <meta name="description" content="Hardened digital infrastructure for high-stake entities." />
+</head>
+<body>
+
+ <header class="site-header">
+  <div class="container header-inner">
+    <a href="index.html" class="brand"><span class="brand-text">KINETIC // EDO</span></a>
+    
+    <button class="mobile-nav-toggle" aria-expanded="false">
+      <div class="hamburger"></div>
+    </button>
+
+   <nav class="nav">
+  <ul class="nav-list">
+    <li><a href="index.html" class="nav-link">Home</a></li> 
+    <li><a href="about.html" class="nav-link">Methodology</a></li>
+    <li><a href="services.html" class="nav-link">Infrastructure</a></li>
+    <li><a href="portal.html" class="nav-link btn btn-outline">Boardroom</a></li>
+  </ul>
+</nav>
+  </div>
+</header>
+
+  <main id="top">
+
+<section id="hero" class="section hero reveal">
+<div class="video-background">
+  <div class="video-overlay"></div>
+  <video autoplay muted loop playsinline id="hero-video">
+  <source src="assets/icons/RED MATRIX.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+</div>
+  </div>
+
+  <div class="container">
+    <div class="hero-grid">
+      <div class="hero-content">
+        <p class="hero-eyebrow">Operational Excellence</p>
+        <h1 class="hero-title">
+          Hardened Infrastructure for <br>
+          <span style="color:var(--color-accent)">High-Stake Entities.</span>
+        </h1>
+        <p class="hero-subtitle">
+          Zero-latency, static-first digital assets that automate operational friction. 
+          No fluff. Just architecture.
+        </p>
+        <div class="hero-actions">
+          <a href="portal.html" class="btn btn-primary pulse">Initiate System Audit</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+   <section id="audit" class="section reveal">
+  <div class="container">
+    <div class="audit-box glass">
+      <div class="audit-header">
+        <h2 class="section-title">Latency Diagnostic</h2>
+        <p class="section-intro">Proving technical efficiency in real-time.</p>
+      </div>
+      <div class="audit-counter">
+        <span id="load-time-display">00.00MS</span>
+      </div>
+      <p class="audit-status">STATUS: <span id="audit-status-text" style="color:var(--color-accent)">INITIALIZING...</span></p>
+    </div>
+  </div>
+</section>
+
+<section id="framework" class="section reveal">
+  <div class="container">
+    <div class="grid framework-grid">
+      
+      <div class="card glass" onclick="openDetail('automation')">
+        <div class="card-header">
+          <span class="card-id">A <span class="arrow">→</span></span>
+          <div class="card-icon">⚡</div>
+        </div>
+        <div class="card-main-content">
+          <h3>Automation</h3>
+          <p>Logic-gate lead vetting.</p>
+        </div>
+        <div class="click-overlay"><span>CLICK ME</span></div>
+        <div class="card-indicator"></div>
+      </div> <div class="card glass" onclick="openDetail('backend')">
+        <div class="card-header">
+          <span class="card-id">B <span class="arrow">→</span></span>
+          <div class="card-icon">🛡️</div>
+        </div>
+        <div class="card-main-content">
+          <h3>Backend</h3>
+          <p>Hardened static core.</p>
+        </div>
+        <div class="click-overlay"><span>CLICK ME</span></div>
+        <div class="card-indicator"></div>
+      </div> <div class="card glass" onclick="openDetail('continuity')">
+        <div class="card-header">
+          <span class="card-id">C <span class="arrow">→</span></span>
+          <div class="card-icon">♻️</div>
+        </div>
+        <div class="card-main-content">
+          <h3>Continuity</h3>
+          <p>99.9% Uptime protocols.</p>
+        </div>
+        <div class="click-overlay"><span>CLICK ME</span></div>
+        <div class="card-indicator"></div>
+      </div> <div class="card glass" onclick="openDetail('deployment')">
+        <div class="card-header">
+          <span class="card-id">D <span class="arrow">→</span></span>
+          <div class="card-icon">🌐</div>
+        </div>
+        <div class="card-main-content">
+          <h3>Deployment</h3>
+          <p>Global Edge distribution.</p>
+        </div>
+        <div class="click-overlay"><span>CLICK ME</span></div>
+        <div class="card-indicator"></div>
+      </div> </div> </div> </section>
+
+    <section id="cta" class="section reveal" style="text-align: center; min-height: 80vh; display: flex; align-items: center;">
+      <div class="container">
+        <h2 class="hero-title">Ready to secure your <br>digital perimeter?</h2>
+        <p class="hero-subtitle">Every second of friction is a loss in revenue. Fix it now.</p>
+        <a href="portal.html" class="btn btn-primary pulse" style="font-size: 1.2rem; padding: 1.5rem 3rem;">Request Infrastructure Audit</a>
+      </div>
+    </section>
+
+  </main>
+<div id="detail-modal" class="modal-overlay" onclick="closeDetail()">
+  <div class="modal-content glass" onclick="event.stopPropagation()">
+    <button class="close-btn" onclick="closeDetail()">&times;</button>
+    <div id="modal-body">
+      </div>
+  </div>
+</div>
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p class="footer-copy">&copy; <span id="year"></span> KINETIC EDO. All rights reserved.</p>
+      <ul class="footer-links">
+        <li><a href="#top">System Reset</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script src="scripts.js"></script>
+</body>
+</html>
