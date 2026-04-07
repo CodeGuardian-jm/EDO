@@ -12,26 +12,30 @@ document.addEventListener("DOMContentLoaded", function () {
   const allNavLinks = document.querySelectorAll('a[href^="#"]');
   const yearSpan = document.getElementById("year");
 
-  // 2. UNIFIED NAVIGATION LOGIC
-  // This replaces BOTH the top and bottom nav blocks you had
-  if (navToggle && nav) {
-    navToggle.addEventListener("click", function (e) {
-      e.preventDefault();
-      e.stopPropagation();
-      
-      const isOpen = nav.classList.toggle("open");
-      navToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
-    });
+// 2. UNIFIED NAVIGATION LOGIC
+if (navToggle && nav) {
+  navToggle.onclick = function(e) {
+    e.preventDefault();
+    
+    // Toggle 'open' on BOTH the nav and the button
+    nav.classList.toggle("open");
+    navToggle.classList.toggle("open"); 
+    
+    const isOpen = nav.classList.contains("open");
+    document.body.style.overflow = isOpen ? "hidden" : "auto";
+  };
 
-    // Close menu when a link is clicked
-    const links = nav.querySelectorAll('a');
-    links.forEach(function (link) {
-      link.addEventListener("click", function () {
-        nav.classList.remove("open");
-        navToggle.setAttribute("aria-expanded", "false");
-      });
-    });
-  }
+
+  // Close menu when a link is clicked
+  const links = nav.querySelectorAll('a');
+  links.forEach(link => {
+    link.onclick = function() {
+      nav.classList.remove("open");
+      navToggle.setAttribute("aria-expanded", "false");
+      document.body.style.overflow = "auto";
+    };
+  });
+}
 
   // 3. SMOOTH SCROLLING (Only for # anchors)
   allNavLinks.forEach(function (link) {
@@ -231,21 +235,25 @@ if(auditForm) {
         }, 2000);
     });
 }
-const nav = document.querySelector('.nav');
-const navToggle = document.querySelector('.mobile-nav-toggle');
+ 
 
-navToggle.addEventListener('click', () => {
-    // This toggles the 'nav-active' class we made in Step 3
-    nav.classList.toggle('nav-active');
-    
-    // Accessibility: tells screen readers if it's open
-    const isOpen = nav.classList.contains('nav-active');
-    navToggle.setAttribute('aria-expanded', isOpen);
+// MOBILE SCROLL REVEAL ENGINE
+const mobileCardObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    // If at least 60% of the card is visible in the center of the screen
+    if (entry.isIntersecting) {
+      entry.target.classList.add('is-visible');
+    } else {
+      // Optional: Remove the class when they scroll past to reset the effect
+      entry.target.classList.remove('is-visible');
+    }
+  });
+}, { 
+  threshold: 0.6, // Trigger when 60% of the card is on screen
+  rootMargin: '0px 0px -10% 0px' // Offset to account for thumb scrolling
 });
 
-// Close menu if a link is clicked (good for mobile UX)
-document.querySelectorAll('.nav-link').forEach(link => {
-    link.addEventListener('click', () => {
-        nav.classList.remove('nav-active');
-    });
+// Attach the watcher to every card
+document.querySelectorAll('.card').forEach(card => {
+  mobileCardObserver.observe(card);
 });
